@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Results - {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-trophy me-2"></i>{{ quiz.title }} - Results
+                    </h3>
+                    <small class="text-muted">
+                        Quiz Period: {{ quiz.start_time.strftime('%Y-%m-%d %H:%M') }} - 
+                        {{ quiz.end_time.strftime('%Y-%m-%d %H:%M') }}
+                    </small>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Correct Answers Section -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-header">
+                                <h6 class="mb-0 text-primary">Question 1 - Correct Answer</h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-2"><strong>{{ quiz.question1 }}</strong></p>
+                                <p class="mb-0 text-success">
+                                    <i class="fas fa-check me-2"></i>
+                                    {{ chr(65 + quiz.question1_correct) }}. {{ quiz.question1_options[quiz.question1_correct] }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-header">
+                                <h6 class="mb-0 text-primary">Question 2 - Correct Answer</h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-2"><strong>{{ quiz.question2 }}</strong></p>
+                                <p class="mb-0 text-success">
+                                    <i class="fas fa-check me-2"></i>
+                                    {{ chr(65 + quiz.question2_correct) }}. {{ quiz.question2_options[quiz.question2_correct] }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Winner Section -->
+                {% if quiz.winner %}
+                    <div class="alert alert-success text-center mb-4">
+                        <i class="fas fa-crown fa-2x mb-3 text-warning"></i>
+                        <h4 class="mb-2">🎉 Congratulations to the Winner! 🎉</h4>
+                        <h5 class="text-primary">{{ quiz.winner.name }}</h5>
+                        <p class="mb-0">
+                            Score: <strong>{{ submissions[0].score }} points</strong> | 
+                            Time: <strong>{{ submissions[0].time_taken }} seconds</strong>
+                        </p>
+                    </div>
+                {% endif %}
+
+                <!-- Leaderboard -->
+                <h5 class="mb-3">
+                    <i class="fas fa-list-ol me-2"></i>Final Leaderboard
+                </h5>
+                
+                {% if submissions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Participant</th>
+                                    <th>Score</th>
+                                    <th>Q1 Answer</th>
+                                    <th>Q2 Answer</th>
+                                    <th>Time</th>
+                                    <th>Bonus</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for submission in submissions %}
+                                    <tr class="{{ 'table-success' if quiz.winner_id == submission.user_id else '' }}">
+                                        <td>
+                                            {% if loop.index == 1 and quiz.winner_id == submission.user_id %}
+                                                <i class="fas fa-crown text-warning"></i> #{{ loop.index }}
+                                            {% else %}
+                                                #{{ loop.index }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ submission.user.name }}
+                                            {% if current_user.is_authenticated and submission.user_id == current_user.id %}
+                                                <span class="badge bg-info">You</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary fs-6">{{ submission.score }} points</span>
+                                        </td>
+                                        <td>
+                                            {% set q1_correct = (submission.answer1 == quiz.question1_correct) %}
+                                            <span class="badge {{ 'bg-success' if q1_correct else 'bg-danger' }}">
+                                                {{ chr(65 + submission.answer1) }}
+                                                <i class="fas {{ 'fa-check' if q1_correct else 'fa-times' }} ms-1"></i>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% set q2_correct = (submission.answer2 == quiz.question2_correct) %}
+                                            <span class="badge {{ 'bg-success' if q2_correct else 'bg-danger' }}">
+                                                {{ chr(65 + submission.answer2) }}
+                                                <i class="fas {{ 'fa-check' if q2_correct else 'fa-times' }} ms-1"></i>
+                                            </span>
+                                        </td>
+                                        <td>{{ submission.time_taken }}s</td>
+                                        <td>
+                                            {% if submission.bonus_awarded %}
+                                                <span class="badge bg-warning">
+                                                    <i class="fas fa-bolt me-1"></i>+5
+                                                </span>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No submissions found for this quiz.</p>
+                    </div>
+                {% endif %}
+
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                        <i class="fas fa-tachometer-alt me-2"></i>Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

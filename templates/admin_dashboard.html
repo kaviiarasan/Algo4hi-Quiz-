@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Quiz Competition{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-cogs me-2 text-warning"></i>Admin Dashboard
+            </h2>
+            <div>
+                <a href="{{ url_for('create_quiz') }}" class="btn btn-primary me-2">
+                    <i class="fas fa-plus me-2"></i>Create Quiz
+                </a>
+                <a href="{{ url_for('manage_winners') }}" class="btn btn-success me-2">
+                    <i class="fas fa-crown me-2"></i>Manage Winners
+                </a>
+                <a href="{{ url_for('admin_logout') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- Quizzes Management -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-clipboard-list me-2"></i>All Quizzes
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if quizzes %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Quiz Title</th>
+                                    <th>Status</th>
+                                    <th>Period</th>
+                                    <th>Submissions</th>
+                                    <th>Winner</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for quiz in quizzes %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ quiz.title }}</strong>
+                                        </td>
+                                        <td>
+                                            {% if quiz.is_locked %}
+                                                {% if quiz.results_published %}
+                                                    <span class="badge bg-success">Published</span>
+                                                {% else %}
+                                                    <span class="badge bg-warning">Locked</span>
+                                                {% endif %}
+                                            {% elif now < quiz.start_time %}
+                                                <span class="badge bg-secondary">Scheduled</span>
+                                            {% elif now <= quiz.end_time %}
+                                                <span class="badge bg-primary">Active</span>
+                                            {% else %}
+                                                <span class="badge bg-dark">Ended</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small>
+                                                {{ quiz.start_time.strftime('%m/%d %H:%M') }} - 
+                                                {{ quiz.end_time.strftime('%m/%d %H:%M') }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">{{ quiz.submissions|length }}</span>
+                                        </td>
+                                        <td>
+                                            {% if quiz.winner %}
+                                                <span class="text-success">
+                                                    <i class="fas fa-crown me-1"></i>{{ quiz.winner.name }}
+                                                </span>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{{ url_for('view_submissions', quiz_id=quiz.id) }}" 
+                                                   class="btn btn-outline-primary">
+                                                    <i class="fas fa-eye me-1"></i>View
+                                                </a>
+                                                
+                                                <a href="{{ url_for('edit_quiz', quiz_id=quiz.id) }}" 
+                                                   class="btn btn-outline-secondary">
+                                                    <i class="fas fa-edit me-1"></i>Edit
+                                                </a>
+                                                
+                                                {% if quiz.quiz_url %}
+                                                <button class="btn btn-outline-info" onclick="copyQuizUrl('{{ request.host_url }}q/{{ quiz.quiz_url }}')">
+                                                    <i class="fas fa-link me-1"></i>Copy URL
+                                                </button>
+                                                {% endif %}
+                                                
+                                                {% if not quiz.is_locked and (now > quiz.end_time or quiz.submissions|length > 0) %}
+                                                    <a href="{{ url_for('lock_quiz', quiz_id=quiz.id) }}" 
+                                                       class="btn btn-warning"
+                                                       onclick="return confirm('This will lock the quiz and determine the winner. Continue?')">
+                                                        <i class="fas fa-lock me-1"></i>Lock
+                                                    </a>
+                                                {% endif %}
+                                                
+                                                {% if quiz.is_locked and not quiz.results_published %}
+                                                    <a href="{{ url_for('publish_results', quiz_id=quiz.id) }}" 
+                                                       class="btn btn-success">
+                                                        <i class="fas fa-bullhorn me-1"></i>Publish
+                                                    </a>
+                                                {% endif %}
+                                                
+                                                {% if quiz.submissions|length > 0 %}
+                                                    <a href="{{ url_for('export_csv', quiz_id=quiz.id) }}" 
+                                                       class="btn btn-outline-secondary">
+                                                        <i class="fas fa-download me-1"></i>CSV
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-clipboard fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No quizzes created yet.</p>
+                        <a href="{{ url_for('create_quiz') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create Your First Quiz
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyQuizUrl(url) {
+    navigator.clipboard.writeText(url).then(function() {
+        alert('Quiz URL copied to clipboard!');
+    }, function() {
+        prompt('Copy this URL:', url);
+    });
+}
+</script>
+{% endblock %}

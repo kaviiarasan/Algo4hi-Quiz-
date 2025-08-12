@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Add Winner - Admin{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-plus-circle me-2 text-success"></i>Add Winner
+            </h2>
+            <a href="{{ url_for('manage_winners') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Winners
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Winner Details</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Winner Name</label>
+                        <input type="text" name="name" class="form-control" required 
+                               placeholder="Enter winner's full name">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Winner Photo</label>
+                        <input type="file" name="photo" class="form-control" accept="image/*">
+                        <div class="form-text">Upload the winner's photo (JPG, PNG, GIF). Leave blank for default avatar.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Achievement/Title</label>
+                        <input type="text" name="achievement" class="form-control" required 
+                               placeholder="e.g., 1st Place Winner, Quiz Champion, etc.">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Related Quiz (Optional)</label>
+                        <select name="quiz_id" class="form-select">
+                            <option value="">General Winner (not quiz-specific)</option>
+                            {% for quiz in quizzes %}
+                            <option value="{{ quiz.id }}">{{ quiz.title }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">Link this winner to a specific quiz, or leave as general winner.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Display Order</label>
+                        <input type="number" name="display_order" class="form-control" value="0" min="0" 
+                               placeholder="0">
+                        <div class="form-text">Lower numbers appear first in the winners slider. Use 0 for highest priority.</div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-crown me-2"></i>Add Winner
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="mb-0 text-muted">
+                    <i class="fas fa-info-circle me-2"></i>Tips
+                </h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <i class="fas fa-lightbulb text-warning me-2"></i>
+                        Upload high-quality square images (recommended: 300x300px) for best display
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-lightbulb text-warning me-2"></i>
+                        Winners appear in the dashboard slider based on display order
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-lightbulb text-warning me-2"></i>
+                        Quiz-specific winners help showcase competition results
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

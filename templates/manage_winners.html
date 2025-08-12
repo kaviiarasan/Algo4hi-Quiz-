@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Winners - Admin{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-crown me-2 text-warning"></i>Manage Winners
+            </h2>
+            <div>
+                <a href="{{ url_for('add_winner') }}" class="btn btn-primary me-2">
+                    <i class="fas fa-plus me-2"></i>Add Winner
+                </a>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        {% if winners %}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Winners Showcase</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Photo</th>
+                                    <th>Name</th>
+                                    <th>Achievement</th>
+                                    <th>Related Quiz</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for winner in winners %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-primary">{{ winner.display_order }}</span>
+                                    </td>
+                                    <td>
+                                        {% if winner.photo_url %}
+                                            {% if winner.photo_url.startswith('http') %}
+                                                <img src="{{ winner.photo_url }}" alt="{{ winner.name }}" 
+                                                     class="rounded-circle" width="40" height="40" 
+                                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yjc0ODMiLz4KPHN2ZyB4PSI1IiB5PSI1IiB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIGZpbGw9IndoaXRlIj4KPHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIj4KPHBhdGggZD0ibTEyIDJjNS41MTQgMCAxMCA0LjQ4NiAxMCAxMHMtNC40ODYgMTAtMTAgMTAtMTAtNC40ODYtMTAtMTAgNC40ODYtMTAgMTAtMTB6bTAgMThjLTIuOTY4IDAtNS4yNC0xLjE1NS02LjY5Ny0zLjExNS4xNjEtMS44MS44ODMtMy4zIDIuMTU5LTQuOTg1IDEuNDktMS44OSAzLjQzNi0zLjkgNS41MzgtMy45czQuMDQ4IDIuMDEgNS41MzggMy45YzEuMjc2IDEuNjg1IDEuOTk4IDMuMTc1IDIuMTU5IDQuOTg1LTEuNDU3IDEuOTYtMy43MjkgMy4xMTUtNi42OTcgMy4xMTV6bTMuOTc4LTE1Ljk1NmMtLjUxIDMuNDU3LTMuNzUzIDYuOTU2LTkuOTc4IDYuOTU2cy05LjQ2OC0zLjQ5OS05Ljk3OC02Ljk1NmMtLjExLS43NC0uMjItMS44MjQgMC0yLjAzNy44ODgtMy43MDkgNi4yMzMtNy4wOTMgOS45NzgtNy4wOTNzOS4wOS0zLjMzNiA5Ljk3OC03LjA5M2MuMjItLjIxMi4xMS0uNjAzIDAgMi4wMzctLjUtLjktLjkxLS4xNzQtLjY2NS43ODF6Ii8+PC9zdmc+PC9zdmc+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00cy0xLjc5LTQtNC00LTQgMS43OS00IDQgMS43OSA0IDQgNHptMCA2Yy0yLjY3IDAtOCAxLjM0LTggNHYyaDE2di0yYzAtMi42Ni01LjMzLTQtOC00eiIgZmlsbD0iIzRhNWI2OCIvPjwvc3ZnPgo=';">
+                                            {% else %}
+                                                <img src="{{ url_for('static', filename=winner.photo_url) }}" alt="{{ winner.name }}" 
+                                                     class="rounded-circle" width="40" height="40" 
+                                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yjc0ODMiLz4KPHN2ZyB4PSI1IiB5PSI1IiB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIGZpbGw9IndoaXRlIj4KPHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIj4KPHBhdGggZD0ibTEyIDJjNS41MTQgMCAxMCA0LjQ4NiAxMCAxMHMtNC40ODYgMTAtMTAgMTAtMTAtNC40ODYtMTAtMTAgNC40ODYtMTAgMTAtMTB6bTAgMThjLTIuOTY4IDAtNS4yNC0xLjE1NS02LjY5Ny0zLjExNS4xNjEtMS44MS44ODMtMy4zIDIuMTU5LTQuOTg1IDEuNDktMS44OSAzLjQzNi0zLjkgNS41MzgtMy45czQuMDQ4IDIuMDEgNS41MzggMy45YzEuMjc2IDEuNjg1IDEuOTk4IDMuMTc1IDIuMTU5IDQuOTg1LTEuNDU3IDEuOTYtMy43MjkgMy4xMTUtNi42OTcgMy4xMTV6bTMuOTc4LTE1Ljk1NmMtLjUxIDMuNDU3LTMuNzUzIDYuOTU2LTkuOTc4IDYuOTU2cy05LjQ2OC0zLjQ5OS05Ljk3OC02Ljk1NmMtLjExLS43NC0uMjItMS44MjQgMC0yLjAzNy44ODgtMy43MDkgNi4yMzMtNy4wOTMgOS45NzgtNy4wOTNzOS4wOS0zLjMzNiA5Ljk3OC03LjA5M2MuMjItLjIxMi4xMS0uNjAzIDAgMi4wMzctLjUtLjktLjkxLS4xNzQtLjY2NS43ODF6Ii8+PC9zdmc+PC9zdmc+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00cy0xLjc5LTQtNC00LTQgMS43OS00IDQgMS43OSA0IDQgNHptMCA2Yy0yLjY3IDAtOCAxLjM0LTggNHYyaDE2di0yYzAtMi42Ni01LjMzLTQtOC00eiIgZmlsbD0iIzRhNWI2OCIvPjwvc3ZnPgo=';">
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" 
+                                                 style="width: 40px; height: 40px;">
+                                                <i class="fas fa-user text-white"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <strong>{{ winner.name }}</strong>
+                                    </td>
+                                    <td>
+                                        {{ winner.achievement }}
+                                    </td>
+                                    <td>
+                                        {% if winner.quiz %}
+                                            <span class="badge bg-success">{{ winner.quiz.title }}</span>
+                                        {% else %}
+                                            <span class="text-muted">General</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('delete_winner', winner_id=winner.id) }}" 
+                                           class="btn btn-sm btn-outline-danger"
+                                           onclick="return confirm('Are you sure you want to remove this winner?')">
+                                            <i class="fas fa-trash me-1"></i>Remove
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-crown fa-4x text-muted mb-3"></i>
+                <h4 class="text-muted">No Winners Yet</h4>
+                <p class="text-muted">Add winners to showcase them on the dashboard.</p>
+                <a href="{{ url_for('add_winner') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Add First Winner
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

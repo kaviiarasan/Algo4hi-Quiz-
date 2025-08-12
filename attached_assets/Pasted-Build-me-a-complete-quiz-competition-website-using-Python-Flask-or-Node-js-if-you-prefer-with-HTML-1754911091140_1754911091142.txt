@@ -1,0 +1,99 @@
+Build me a complete quiz competition website using Python Flask (or Node.js if you prefer) with HTML, CSS, and JavaScript, fully functional in Replit.
+
+Website Requirements:
+
+General Features:
+
+Users will come from a newsletter link, land on a login/register page, then play a quiz.
+
+Quiz has exactly 2 questions.
+
+Correct answer = +10 points, wrong = 0 points.
+
+If both answers are correct AND submitted in under 1 minute, award +5 bonus points.
+
+Maximum score = 25 points.
+
+Store each user’s submission time in seconds.
+
+User Flow:
+
+Login/Register page (email + password or magic link).
+
+Dashboard showing:
+
+Current active quiz (if available).
+
+Past quizzes and user’s scores.
+
+Quiz page:
+
+Show quiz title and 2 questions (multiple choice).
+
+Timer starts on page load.
+
+User can submit only once.
+
+After quiz submission:
+
+Show “Submission Received” message.
+
+Hide answers and timer.
+
+Results page (visible only after admin locks quiz):
+
+Display correct answers, user’s score, and if they won.
+
+Highlight winner.
+
+Admin Flow:
+
+Admin login page.
+
+Admin dashboard:
+
+Create quiz (title, start time, end time, questions, options, correct answers).
+
+View submissions in real time with: name, email, score, time taken.
+
+Lock quiz → stops new submissions, auto-selects winner.
+
+Winner selection logic:
+
+Highest score wins.
+
+Tie-breaker: fastest time.
+
+If still tied: random pick.
+
+Publish results → winner appears on results page for all.
+
+Export results to CSV.
+
+Technical Requirements:
+
+Use Flask for backend (or Node.js Express).
+
+SQLite for storage (users, quizzes, answers, results).
+
+HTML/CSS/JavaScript for frontend (Bootstrap for styling).
+
+Separate templates for: login, register, dashboard, quiz, results, admin dashboard, create quiz, view submissions.
+
+Ensure mobile-friendly responsive design.
+
+Basic security: hashed passwords, CSRF protection.
+
+Prevent multiple submissions per user per quiz.
+
+Extra Details:
+
+Auto-calculate score and bonus points.
+
+Auto-determine winner after quiz lock.
+
+Show winner’s name and score publicly after results are published.
+
+Clean UI with minimal colors and clear fonts.
+
+Deliver fully working code with all routes, templates, and database setup so I can just run and use it in Replit.
