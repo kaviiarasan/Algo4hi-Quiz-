@@ -1,34 +1,109 @@
+
 {% extends "base.html" %}
 
 {% block title %}Welcome - Algo4hi Quiz{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-6">
-        <div class="text-center">
-            <h1 class="display-3 mb-5">
-                <i class="fas fa-trophy text-warning me-3"></i>
-                Algo4hi Quiz
-            </h1>
-            
-            {% if not current_user.is_authenticated and not session.get('admin_logged_in') %}
-            <div class="d-flex gap-3 justify-content-center">
-                <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4">
-                    <i class="fas fa-sign-in-alt me-2"></i>Login
-                </a>
-                <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg px-4">
-                    <i class="fas fa-user-plus me-2"></i>Register
-                </a>
+    <div class="col-lg-10">
+        <!-- Hero Section -->
+        <div class="card glass-card text-center mb-5">
+            <div class="card-body p-5">
+                <div class="mb-4">
+                    <i class="fas fa-trophy fa-4x mb-3" style="color: var(--accent-color);"></i>
+                    <h1 class="display-4 fw-bold mb-4" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        Algo4hi Quiz
+                    </h1>
+                    
+                    <!-- Sign in and Register buttons at top -->
+                    {% if not current_user.is_authenticated %}
+                    <div class="row justify-content-center mb-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-center gap-3 flex-nowrap">
+                                <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-5 text-nowrap">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                                </a>
+                                <a href="{{ url_for('register') }}" class="btn btn-success btn-lg px-5 text-nowrap">
+                                    <i class="fas fa-user-plus me-2"></i>Register
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <p class="lead mb-4" style="color: var(--text-secondary);">
+                        Challenge yourself with engaging quizzes, compete with others, and climb the leaderboard to glory!
+                    </p>
+                </div>
+                
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
+                        <div class="glass rounded-4 p-4 h-100">
+                            <i class="fas fa-brain fa-2x mb-3" style="color: #8b5cf6;"></i>
+                            <h5 class="fw-bold" style="color: var(--text-primary);">Smart Questions</h5>
+                            <p class="small mb-0" style="color: var(--text-secondary);">Carefully crafted questions to test your knowledge</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="glass rounded-4 p-4 h-100">
+                            <i class="fas fa-stopwatch fa-2x mb-3" style="color: #10b981;"></i>
+                            <h5 class="fw-bold" style="color: var(--text-primary);">Time Challenge</h5>
+                            <p class="small mb-0" style="color: var(--text-secondary);">Race against time and earn bonus points</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="glass rounded-4 p-4 h-100">
+                            <i class="fas fa-crown fa-2x mb-3" style="color: #fbbf24;"></i>
+                            <h5 class="fw-bold" style="color: var(--text-primary);">Hall of Fame</h5>
+                            <p class="small mb-0" style="color: var(--text-secondary);">Join the elite ranks of quiz champions</p>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if current_user.is_authenticated %}
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg w-100 mb-3">
+                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
             </div>
-            {% elif current_user.is_authenticated %}
-            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
-                <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
-            </a>
-            {% elif session.get('admin_logged_in') %}
-            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-warning btn-lg">
-                <i class="fas fa-cogs me-2"></i>Go to Admin Panel
-            </a>
-            {% endif %}
+        </div>
+        
+        <!-- Features Section -->
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card glass-card h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="glass rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                <i class="fas fa-rocket fa-lg" style="color: var(--accent-color);"></i>
+                            </div>
+                            <h4 class="fw-bold mb-0" style="color: var(--text-primary);">Quick Start</h4>
+                        </div>
+                        <p style="color: var(--text-secondary);">
+                            Jump right into active quizzes and start competing immediately. No complex setup required!
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card glass-card h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="glass rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                <i class="fas fa-chart-line fa-lg" style="color: var(--accent-color);"></i>
+                            </div>
+                            <h4 class="fw-bold mb-0" style="color: var(--text-primary);">Track Progress</h4>
+                        </div>
+                        <p style="color: var(--text-secondary);">
+                            Monitor your performance, view detailed results, and track your improvement over time.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

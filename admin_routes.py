@@ -208,6 +208,51 @@ def add_winner():
     quizzes = Quiz.query.filter_by(is_locked=True).all()
     return render_template('add_winner.html', quizzes=quizzes)
 
+@app.route('/admin/create_sample_winners')
+@admin_required
+def create_sample_winners():
+    # Check if winners already exist
+    existing_winners = Winner.query.count()
+    if existing_winners > 0:
+        flash('Sample winners already exist!', 'info')
+        return redirect(url_for('manage_winners'))
+    
+    # Create sample winners
+    sample_winners = [
+        {
+            'name': 'Alex Johnson',
+            'achievement': 'Algorithm Master - Perfect Score in 45 seconds',
+            'photo_url': 'uploads/29cbac10-10fa-4187-84f7-b9ff74998b49_1754995261.png',
+            'display_order': 1
+        },
+        {
+            'name': 'Sarah Chen',
+            'achievement': 'Speed Champion - Completed in 38 seconds',
+            'photo_url': 'uploads/dcaa00bf-37cc-4b1e-a0e0-45eef385ab4c_1754995277.png',
+            'display_order': 2
+        },
+        {
+            'name': 'Mike Rodriguez',
+            'achievement': 'Problem Solving Expert - 100% Accuracy',
+            'photo_url': 'uploads/Picture1_1754977996.png',
+            'display_order': 3
+        }
+    ]
+    
+    for winner_data in sample_winners:
+        winner = Winner(
+            name=winner_data['name'],
+            achievement=winner_data['achievement'],
+            photo_url=winner_data['photo_url'],
+            display_order=winner_data['display_order'],
+            is_active=True
+        )
+        db.session.add(winner)
+    
+    db.session.commit()
+    flash('Sample winners created successfully!', 'success')
+    return redirect(url_for('manage_winners'))
+
 @app.route('/admin/winner/<int:winner_id>/delete')
 @admin_required
 def delete_winner(winner_id):

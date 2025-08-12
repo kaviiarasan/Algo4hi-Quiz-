@@ -62,7 +62,7 @@ with app.app_context():
     if not admin:
         admin = Admin(
             username='Algo admin',
-            email='Kaviiarasan.sv@gktech.ai',
+            email='kaviiarasan.sv@gktech.ai',
             password_hash=generate_password_hash('algogkt@123')
         )
         db.session.add(admin)

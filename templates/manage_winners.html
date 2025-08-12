@@ -13,6 +13,11 @@
                 <a href="{{ url_for('add_winner') }}" class="btn btn-primary me-2">
                     <i class="fas fa-plus me-2"></i>Add Winner
                 </a>
+                {% if winners|length == 0 %}
+                <a href="{{ url_for('create_sample_winners') }}" class="btn btn-success me-2">
+                    <i class="fas fa-magic me-2"></i>Create Sample Winners
+                </a>
+                {% endif %}
                 <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                 </a>
@@ -47,12 +52,20 @@
                                         {% if winner.photo_url %}
                                             {% if winner.photo_url.startswith('http') %}
                                                 <img src="{{ winner.photo_url }}" alt="{{ winner.name }}" 
-                                                     class="rounded-circle" width="40" height="40" 
-                                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yjc0ODMiLz4KPHN2ZyB4PSI1IiB5PSI1IiB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIGZpbGw9IndoaXRlIj4KPHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIj4KPHBhdGggZD0ibTEyIDJjNS41MTQgMCAxMCA0LjQ4NiAxMCAxMHMtNC40ODYgMTAtMTAgMTAtMTAtNC40ODYtMTAtMTAgNC40ODYtMTAgMTAtMTB6bTAgMThjLTIuOTY4IDAtNS4yNC0xLjE1NS02LjY5Ny0zLjExNS4xNjEtMS44MS44ODMtMy4zIDIuMTU5LTQuOTg1IDEuNDktMS44OSAzLjQzNi0zLjkgNS41MzgtMy45czQuMDQ4IDIuMDEgNS41MzggMy45YzEuMjc2IDEuNjg1IDEuOTk4IDMuMTc1IDIuMTU5IDQuOTg1LTEuNDU3IDEuOTYtMy43MjkgMy4xMTUtNi42OTcgMy4xMTV6bTMuOTc4LTE1Ljk1NmMtLjUxIDMuNDU3LTMuNzUzIDYuOTU2LTkuOTc4IDYuOTU2cy05LjQ2OC0zLjQ5OS05Ljk3OC02Ljk1NmMtLjExLS43NC0uMjItMS44MjQgMC0yLjAzNy44ODgtMy43MDkgNi4yMzMtNy4wOTMgOS45NzgtNy4wOTNzOS4wOS0zLjMzNiA5Ljk3OC03LjA5M2MuMjItLjIxMi4xMS0uNjAzIDAgMi4wMzctLjUtLjktLjkxLS4xNzQtLjY2NS43ODF6Ii8+PC9zdmc+PC9zdmc+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00cy0xLjc5LTQtNC00LTQgMS43OS00IDQgMS43OSA0IDQgNHptMCA2Yy0yLjY3IDAtOCAxLjM0LTggNHYyaDE2di0yYzAtMi42Ni01LjMzLTQtOC00eiIgZmlsbD0iIzRhNWI2OCIvPjwvc3ZnPgo=';">
+                                                     class="rounded-circle" width="40" height="40" style="object-fit: cover;"
+                                                     onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" 
+                                                     style="width: 40px; height: 40px; display: none;">
+                                                    <i class="fas fa-user text-white"></i>
+                                                </div>
                                             {% else %}
                                                 <img src="{{ url_for('static', filename=winner.photo_url) }}" alt="{{ winner.name }}" 
-                                                     class="rounded-circle" width="40" height="40" 
-                                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yjc0ODMiLz4KPHN2ZyB4PSI1IiB5PSI1IiB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIGZpbGw9IndoaXRlIj4KPHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIj4KPHBhdGggZD0ibTEyIDJjNS41MTQgMCAxMCA0LjQ4NiAxMCAxMHMtNC40ODYgMTAtMTAgMTAtMTAtNC40ODYtMTAtMTAgNC40ODYtMTAgMTAtMTB6bTAgMThjLTIuOTY4IDAtNS4yNC0xLjE1NS02LjY5Ny0zLjExNS4xNjEtMS44MS44ODMtMy4zIDIuMTU5LTQuOTg1IDEuNDktMS44OSAzLjQzNi0zLjkgNS41MzgtMy45czQuMDQ4IDIuMDEgNS41MzggMy45YzEuMjc2IDEuNjg1IDEuOTk4IDMuMTc1IDIuMTU5IDQuOTg1LTEuNDU3IDEuOTYtMy43MjkgMy4xMTUtNi42OTcgMy4xMTV6bTMuOTc4LTE1Ljk1NmMtLjUxIDMuNDU3LTMuNzUzIDYuOTU2LTkuOTc4IDYuOTU2cy05LjQ2OC0zLjQ5OS05Ljk3OC02Ljk1NmMtLjExLS43NC0uMjItMS44MjQgMC0yLjAzNy44ODgtMy43MDkgNi4yMzMtNy4wOTMgOS45NzgtNy4wOTNzOS4wOS0zLjMzNiA5Ljk3OC03LjA5M2MuMjItLjIxMi4xMS0uNjAzIDAgMi4wMzctLjUtLjktLjkxLS4xNzQtLjY2NS43ODF6Ii8+PC9zdmc+PC9zdmc+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00cy0xLjc5LTQtNC00LTQgMS43OS00IDQgMS43OSA0IDQgNHptMCA2Yy0yLjY3IDAtOCAxLjM0LTggNHYyaDE2di0yYzAtMi42Ni01LjMzLTQtOC00eiIgZmlsbD0iIzRhNWI2OCIvPjwvc3ZnPgo=';">
+                                                     class="rounded-circle" width="40" height="40" style="object-fit: cover;"
+                                                     onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" 
+                                                     style="width: 40px; height: 40px; display: none;">
+                                                    <i class="fas fa-user text-white"></i>
+                                                </div>
                                             {% endif %}
                                         {% else %}
                                             <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" 

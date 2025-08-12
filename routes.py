@@ -18,8 +18,8 @@ def login():
     
     form = LoginForm()
     if form.validate_on_submit():
-        # Check for admin login by email
-        if form.email.data == 'Kaviiarasan.sv@gktech.ai' and form.password.data == 'algogkt@123':
+        # Check for admin login by email (case insensitive)
+        if form.email.data.lower() == 'kaviiarasan.sv@gktech.ai' and form.password.data == 'algogkt@123':
             session['admin_logged_in'] = True
             session['admin_user'] = 'Algo admin'
             flash('Admin login successful!', 'success')
@@ -236,14 +236,4 @@ def view_results(quiz_id):
     
     return render_template('results.html', quiz=quiz, submissions=submissions)
 
-@app.route('/q/<quiz_url>')
-def quiz_direct_link(quiz_url):
-    """Direct link access to quiz by URL"""
-    quiz = Quiz.query.filter_by(quiz_url=quiz_url).first_or_404()
-    
-    if current_user.is_authenticated:
-        # User is logged in, redirect to quiz
-        return redirect(url_for('take_quiz', quiz_id=quiz.id))
-    else:
-        # User not logged in, redirect to login with next parameter
-        return redirect(url_for('login', next=url_for('take_quiz', quiz_id=quiz.id)))
+
