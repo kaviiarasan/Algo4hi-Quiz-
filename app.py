@@ -15,7 +15,7 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 login_manager = LoginManager()
 
-# create the app
+# Initialize Flask app
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "quiz-competition-secret-key-2024")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
@@ -31,6 +31,10 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+# Ensure upload directory exists
+upload_dir = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+os.makedirs(upload_dir, exist_ok=True)
 
 # Initialize extensions
 db.init_app(app)
@@ -49,14 +53,14 @@ def load_user(user_id):
 with app.app_context():
     # Import models to ensure they're registered
     import models
-    
+
     # Create tables
     db.create_all()
-    
+
     # Create admin user if it doesn't exist
     from models import Admin
     from werkzeug.security import generate_password_hash
-    
+
     # Create the Algo admin user if it doesn't exist
     admin = Admin.query.filter_by(username='Algo admin').first()
     if not admin:

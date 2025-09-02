@@ -100,6 +100,19 @@ def dashboard():
     from models import Winner
     winners = Winner.query.filter_by(is_active=True).order_by(Winner.display_order).all()
     
+    # Debug: Print winners info
+    print(f"Found {len(winners)} winners")
+    for winner in winners:
+        print(f"Winner: {winner.name}, Photo: {winner.photo_url}")
+        if winner.photo_url:
+            import os
+            photo_path = os.path.join(app.root_path, 'static', winner.photo_url)
+            exists = os.path.exists(photo_path)
+            print(f"  File exists at {photo_path}: {exists}")
+            if exists:
+                file_size = os.path.getsize(photo_path)
+                print(f"  File size: {file_size} bytes")
+    
     return render_template('dashboard.html', 
                          active_quiz=active_quiz, 
                          past_submissions=past_submissions,
@@ -235,5 +248,59 @@ def view_results(quiz_id):
         .all()
     
     return render_template('results.html', quiz=quiz, submissions=submissions)
+
+@app.route('/winner/<int:winner_id>')
+def winner_landing(winner_id):
+    winner = Winner.query.get_or_404(winner_id)
+    
+    # Debug winner data
+    print(f"Loading winner landing for: {winner.name}")
+    print(f"Photo URL: {winner.photo_url}")
+    if winner.photo_url:
+        import os
+        photo_path = os.path.join(app.root_path, 'static', winner.photo_url)
+        exists = os.path.exists(photo_path)
+        print(f"Photo file exists: {exists} at {photo_path}")
+        
+        # Generate the full URL that will be used
+        from flask import url_for
+        if winner.photo_url.startswith('http'):
+            full_url = winner.photo_url
+        else:
+            full_url = url_for('static', filename=winner.photo_url)
+        print(f"Generated URL: {full_url}")
+    
+    return render_template('winner_landing.html', winner=winner)
+
+@app.route('/test-images')
+def test_images():
+    """Test route to check image accessibility"""
+    winners = Winner.query.filter_by(is_active=True).all()
+    results = []
+    
+    for winner in winners:
+        result = {
+            'name': winner.name,
+            'photo_url': winner.photo_url,
+            'file_exists': False,
+            'full_path': None,
+            'generated_url': None
+        }
+        
+        if winner.photo_url:
+            import os
+            from flask import url_for
+            photo_path = os.path.join(app.root_path, 'static', winner.photo_url)
+            result['file_exists'] = os.path.exists(photo_path)
+            result['full_path'] = photo_path
+            
+            if winner.photo_url.startswith('http'):
+                result['generated_url'] = winner.photo_url
+            else:
+                result['generated_url'] = url_for('static', filename=winner.photo_url)
+        
+        results.append(result)
+    
+    return {'winners': results}
 
 
